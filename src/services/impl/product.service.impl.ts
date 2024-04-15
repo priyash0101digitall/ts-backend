@@ -3,6 +3,7 @@ import { TYPES } from "../../types";
 import { Product } from "../../models/product.model";
 import { Repositories } from "../../dataAccess/repositories";
 import { ProductService } from "../product.service";
+import { GetProductResDto } from "../../dtos/product.dto";
 
 @injectable()
 export class ProductServiceImpl implements ProductService {
@@ -18,8 +19,20 @@ export class ProductServiceImpl implements ProductService {
 
   async getProducts(req: any): Promise<any> {
     const res: any = await this.repo.products.get(req);
-    const products: Product[] = res.data;
+    const products: Product[] = res.data.map(
+      (product: any) =>
+        new GetProductResDto(
+          product.name,
+          product.price,
+          `${req.originalUrl.split("?")[0]}/${product._id}`
+        )
+    );
 
     return { products, ...res.page_info };
+  }
+
+  async getProduct(req: any): Promise<any> {
+    const product: any = await this.repo.products.getById(req.params.id);
+    return product;
   }
 }

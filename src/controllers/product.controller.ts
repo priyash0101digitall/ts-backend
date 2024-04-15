@@ -27,4 +27,12 @@ export class ProductController {
     const products: Product = await this.productService.getProducts(req);
     res.json(new SuccessResponse("S-10001", products));
   }
+
+  @catchError
+  // @loginRequired
+  // @roleRequired("customer")
+  async getProduct(req: any, res: Response): Promise<void> {
+    const products: Product = await this.productService.getProduct(req);
+    res.json(new SuccessResponse("S-10001", products));
+  }
 }
